@@ -1,0 +1,5 @@
+# Application runtime.
+/log/
+
+# Vendor libraries.
+/vendor/
