@@ -8,6 +8,7 @@ use Behat\Mink\Session;
 use davidlukac\company_registry\models\CompanyInfo;
 use DusanKasan\Knapsack\Collection;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
@@ -48,18 +49,37 @@ class CompanyRepository
         $session->visit($url);
         $page = $session->getPage();
 
-        $resultSet = Collection::from($page->findAll("css", "div.bmk"));
+        $resultRows = Collection::from($page->findAll("xpath", "//tr[td/div[@class='sbj']]"));
 
-        /* @var NodeElement $result */
-        $result = $resultSet->getOrDefault(0, null);
+        if ($resultRows->isEmpty()) {
+            // Handle "not-found".
+            throw new NotFoundHttpException("Company with ID ${id} was not found.");
+        } elseif ($resultRows->size() > 1) {
+            // Handle too many results.
+            throw new NotFoundHttpException("Unambiguous company ID: ${id}!");
+        } else {
+            /* @var NodeElement $result */
+            $result = $resultRows->first();
+        }
+
+        /* @var NodeElement $linkElement */
+        $linkElement = $result->findLink("Aktuálny");
+        $companyName = $result->find('css', '.sbj')->getText();
+
+        $linkElement->click();
+
+        $detailPage = $session->getPage();
+        $address = $detailPage->find('xpath', "//tr[td/span[contains(text(),\"Sídlo\")]]/td[2]//td[1]")->getText();
 
         $company = new CompanyInfo();
         $company->setId($id);
+        $company->setName($companyName);
         if ($result) {
             $company->setExists(true);
         } else {
             $company->setExists(false);
         }
+        $company->setAddress($address);
 
         $this->log->debug(\GuzzleHttp\json_encode($company));
 

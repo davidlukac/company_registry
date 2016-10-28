@@ -4,6 +4,7 @@ use davidlukac\company_registry\models\CompanyInfo;
 use davidlukac\company_registry\services\CompanyRepository;
 use Silex\Provider\MonologServiceProvider;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -22,8 +23,8 @@ $app->get("${api_v1}/ico/exists/{id}", function ($id) use ($app) {
     $result = new stdClass();
 
     try {
-        $orsrRepository = new CompanyRepository($app['monolog']);
-        $result = $orsrRepository->exists($id);
+        $repository = new CompanyRepository($app['monolog']);
+        $result = $repository->exists($id);
     } catch (ServiceUnavailableHttpException $e) {
         $app->abort(404, $e->getMessage());
     }
@@ -35,8 +36,8 @@ $app->get("${api_v1}/companies", function () use ($app) {
     $result = new stdClass();
 
     try {
-        $orsrRepository = new CompanyRepository($app['monolog']);
-        $orsrRepository->getAll();
+        $repository = new CompanyRepository($app['monolog']);
+        $repository->getAll();
     } catch (ServiceUnavailableHttpException $e) {
         $app->abort(404, $e->getMessage());
     }
@@ -49,9 +50,9 @@ $app->get("${api_v1}/companies/{id}", function ($id) use ($app) {
     $result = new stdClass();
 
     try {
-        $orsrRepository = new CompanyRepository($app['monolog']);
-        $result = $orsrRepository->findById($id);
-    } catch (ServiceUnavailableHttpException $e) {
+        $repository = new CompanyRepository($app['monolog']);
+        $result = $repository->findById($id);
+    } catch (NotFoundHttpException $e) {
         $app->abort(404, $e->getMessage());
     }
 

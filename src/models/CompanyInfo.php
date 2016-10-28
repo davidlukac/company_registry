@@ -15,12 +15,14 @@ namespace davidlukac\company_registry\models;
  */
 class CompanyInfo
 {
-    /* @var Int $id Company ID - ICO */
+    /** var Int  */
     private $id;
-    /* @var string $name Company name */
+    /** var string */
     private $name;
-    /* @var bool $exists */
+    /** var bool */
     private $exists;
+    /** @var string */
+    private $address;
 
     /**
      * @return Int
@@ -71,15 +73,34 @@ class CompanyInfo
     }
 
     /**
+     * @return string
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+
+    /**
      * Converts CompanyInfo object to stdClass.
      *
      * @return \stdClass
      */
-    public function toPlainStdClass() {
+    public function toPlainStdClass()
+    {
         $r = new \stdClass();
         $r->id = $this->getId();
         $r->name = $this->getName();
         $r->exists = $this->exists();
+        $r->address = $this->getAddress();
         return $r;
     }
 }
