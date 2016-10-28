@@ -1,0 +1,29 @@
+{
+  "name": "davidlukac/company_registry",
+  "license": "MIT",
+  "type": "project",
+  "description": "API for Slovak company registry",
+  "authors": [
+    {
+      "name": "David Lukac",
+      "email": "david.lukac@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.6",
+    "silex/silex": "~2.0",
+    "behat/mink": "^1.7",
+    "behat/mink-goutte-driver": "^1.2",
+    "monolog/monolog": "^1.21",
+    "dusank/knapsack": "^8.3",
+    "symfony/serializer": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "davidlukac\\company_registry\\": "src/"
+    }
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
+}
