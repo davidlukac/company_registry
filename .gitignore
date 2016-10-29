@@ -7,6 +7,8 @@
 /bin/phpunit
 /bin/coveralls
 /bin/test-reporter
+/bin/phpcs
+/bin/phpcbf
 
 # Test.
 clover.xml
