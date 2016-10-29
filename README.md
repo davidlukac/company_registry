@@ -6,7 +6,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/fc44dd57328b48efa96ebde6d21cae73)](https://www.codacy.com/app/david-lukac/company_registry?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=davidlukac/company_registry&amp;utm_campaign=Badge_Grade)
 [![Code Climate](https://codeclimate.com/github/davidlukac/company_registry/badges/gpa.svg)](https://codeclimate.com/github/davidlukac/company_registry)
 [![Test Coverage](https://codeclimate.com/github/davidlukac/company_registry/badges/coverage.svg)](https://codeclimate.com/github/davidlukac/company_registry/coverage)
-[![Issue Count](https://codeclimate.com/github/davidlukac/company_registry/badges/issue_count.svg)](https://codeclimate.com/github/davidlukac/company_registry)
+[![Issue Count](https://codeclimate.com/github/davidlukac/company_registry/badges/issue_count.svg)](https://codeclimate.com/github/davidlukac/company_registry/issues)
 
 # Company Registry API
 The unofficial API for Slovak Company registries (http://orsr.sk and 

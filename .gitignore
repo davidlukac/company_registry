@@ -5,6 +5,8 @@
 /vendor/
 /bin/codacycoverage
 /bin/phpunit
+/bin/coveralls
+/bin/test-reporter
 
 # Test.
 clover.xml
