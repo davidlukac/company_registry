@@ -19,8 +19,10 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 class CompanyRepository
 {
     const BASE_URL = "http://orsr.sk";
-    private $searchUrl = self::BASE_URL . "/hladaj_ico.asp";
-    private $detailUrl = self::BASE_URL . "/vypis.asp";
+
+    protected $searchUrl = self::BASE_URL . "/hladaj_ico.asp";
+    protected $detailUrl = self::BASE_URL . "/vypis.asp";
+
     /* @var LoggerInterface $og */
     private $log;
 
@@ -35,17 +37,19 @@ class CompanyRepository
     }
 
     /**
-     * @param Int $id
+     * Find and return company information by ID (ICO).
+     *
+     * @param Int $companyId
      *
      * @return CompanyInfo
      */
-    public function findById($id)
+    public function findById($companyId)
     {
         $driver = new GoutteDriver();
         $session = new Session($driver);
         $session->start();
 
-        $url = $this->searchUrl . "?ICO=${id}}&SID=0";
+        $url = $this->searchUrl . "?ICO=${companyId}}&SID=0";
         $session->visit($url);
         $page = $session->getPage();
 
@@ -53,10 +57,10 @@ class CompanyRepository
 
         if ($resultRows->isEmpty()) {
             // Handle "not-found".
-            throw new NotFoundHttpException("Company with ID ${id} was not found.");
+            throw new NotFoundHttpException("Company with ID ${companyId} was not found.");
         } elseif ($resultRows->size() > 1) {
             // Handle too many results.
-            throw new NotFoundHttpException("Unambiguous company ID: ${id}!");
+            throw new NotFoundHttpException("Unambiguous company ID: ${companyId}!");
         } else {
             /* @var NodeElement $result */
             $result = $resultRows->first();
@@ -72,7 +76,7 @@ class CompanyRepository
         $address = $detailPage->find('xpath', "//tr[td/span[contains(text(),\"Sídlo\")]]/td[2]//td[1]")->getText();
 
         $company = new CompanyInfo();
-        $company->setId($id);
+        $company->setCompanyId($companyId);
         $company->setName($companyName);
         if ($result) {
             $company->setExists(true);
@@ -89,17 +93,17 @@ class CompanyRepository
     /**
      * Confirm whether company exists
      *
-     * @param Int $id Company ID.
+     * @param Int $companyId Company ID.
      *
      * @return CompanyInfo True if company was found, false othewise.
      */
-    public function exists($id)
+    public function exists($companyId)
     {
         $driver = new GoutteDriver();
         $session = new Session($driver);
         $session->start();
 
-        $url = $this->searchUrl . "?ICO=${id}}&SID=0";
+        $url = $this->searchUrl . "?ICO=${companyId}}&SID=0";
         $session->visit($url);
         $page = $session->getPage();
 
@@ -109,7 +113,7 @@ class CompanyRepository
         $result = $resultSet->getOrDefault(0, null);
 
         $company = new CompanyInfo();
-        $company->setId($id);
+        $company->setCompanyId($companyId);
         if ($result) {
             $company->setExists(true);
         } else {
@@ -121,6 +125,9 @@ class CompanyRepository
         return $company;
     }
 
+    /**
+     * @todo Implement.
+     */
     public function getAll()
     {
         throw new ServiceUnavailableHttpException("Not implemented");

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: davidlukac
- * Date: 16/10/16
- * Time: 12:42
- */
 
 namespace davidlukac\company_registry\models;
 
@@ -16,7 +10,7 @@ namespace davidlukac\company_registry\models;
 class CompanyInfo
 {
     /** var Int  */
-    private $id;
+    private $companyId;
     /** var string */
     private $name;
     /** var bool */
@@ -27,17 +21,17 @@ class CompanyInfo
     /**
      * @return Int
      */
-    public function getId()
+    public function getCompanyId()
     {
-        return $this->id;
+        return $this->companyId;
     }
 
     /**
-     * @param Int $id
+     * @param Int $companyId
      */
-    public function setId($id)
+    public function setCompanyId($companyId)
     {
-        $this->id = $id;
+        $this->companyId = $companyId;
     }
 
     /**
@@ -88,7 +82,6 @@ class CompanyInfo
         $this->address = $address;
     }
 
-
     /**
      * Converts CompanyInfo object to stdClass.
      *
@@ -96,11 +89,11 @@ class CompanyInfo
      */
     public function toPlainStdClass()
     {
-        $r = new \stdClass();
-        $r->id = $this->getId();
-        $r->name = $this->getName();
-        $r->exists = $this->exists();
-        $r->address = $this->getAddress();
-        return $r;
+        $result = new \stdClass();
+        $result->id = $this->getCompanyId();
+        $result->name = $this->getName();
+        $result->exists = $this->exists();
+        $result->address = $this->getAddress();
+        return $result;
     }
 }
