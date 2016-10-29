@@ -53,7 +53,7 @@ class CompanyRepository
         $session->visit($url);
         $page = $session->getPage();
 
-        $resultRows = Collection::from($page->findAll("xpath", "//tr[td/div[@class='sbj']]"));
+        $resultRows = new Collection($page->findAll("xpath", "//tr[td/div[@class='sbj']]"));
 
         if ($resultRows->isEmpty()) {
             // Handle "not-found".
@@ -61,10 +61,10 @@ class CompanyRepository
         } elseif ($resultRows->size() > 1) {
             // Handle too many results.
             throw new NotFoundHttpException("Unambiguous company ID: ${companyId}!");
-        } else {
-            /* @var NodeElement $result */
-            $result = $resultRows->first();
         }
+
+        /* @var NodeElement $result */
+        $result = $resultRows->first();
 
         /* @var NodeElement $linkElement */
         $linkElement = $result->findLink("Aktuálny");
@@ -78,11 +78,8 @@ class CompanyRepository
         $company = new CompanyInfo();
         $company->setCompanyId($companyId);
         $company->setName($companyName);
-        if ($result) {
-            $company->setExists(true);
-        } else {
-            $company->setExists(false);
-        }
+        // We have already confirmed that the Company exists and was found.
+        $company->setExists(true);
         $company->setAddress($address);
 
         $this->log->debug(\GuzzleHttp\json_encode($company));
@@ -107,18 +104,14 @@ class CompanyRepository
         $session->visit($url);
         $page = $session->getPage();
 
-        $resultSet = Collection::from($page->findAll("css", "div.bmk"));
+        $resultSet = new Collection($page->findAll("css", "div.bmk"));
 
         /* @var NodeElement $result */
         $result = $resultSet->getOrDefault(0, null);
 
         $company = new CompanyInfo();
         $company->setCompanyId($companyId);
-        if ($result) {
-            $company->setExists(true);
-        } else {
-            $company->setExists(false);
-        }
+        $company->setExists((bool) $result);
 
         $this->log->debug(\GuzzleHttp\json_encode($company));
 
