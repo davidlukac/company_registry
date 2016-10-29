@@ -9,6 +9,8 @@
 /bin/test-reporter
 /bin/phpcs
 /bin/phpcbf
+/bin/pdepend
+/bin/phpmd
 
 # Test.
 clover.xml
