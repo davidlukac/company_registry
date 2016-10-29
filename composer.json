@@ -25,5 +25,9 @@
   },
   "config": {
     "bin-dir": "bin"
+  },
+  "require-dev": {
+    "codacy/coverage": "^1.0",
+    "phpunit/phpunit": "^5.6"
   }
 }
