@@ -3,3 +3,8 @@
 
 # Vendor libraries.
 /vendor/
+/bin/codacycoverage
+/bin/phpunit
+
+# Test.
+clover.xml
