@@ -14,3 +14,9 @@
 
 # Test.
 clover.xml
+
+# Python compiled bytecode.
+*.pyc
+
+# Secrets.
+/fabfile_hosts.cfg
