@@ -23,6 +23,20 @@ def deploy_stage():
     print("We are on branch '{b}'.".format(b=branch))
     code_dir = 'davidlukac.com/sub/stage-registry/'
     with cd(code_dir):
-        run("git pull")
+        run("git fetch")
         run("git checkout {b}".format(b=branch))
+        run("git pull")
+        run("composer install --no-dev --no-progress --no-suggest --optimize-autoloader --no-interaction")
+
+
+@task()
+def deploy():
+    local("git fetch")
+    local("git checkout master")
+    local("git pull")
+    prod_dir = 'davidlukac.com/sub/registry/'
+    with cd(prod_dir):
+        run("git fetch")
+        run("git checkout master")
+        run("git pull")
         run("composer install --no-dev --no-progress --no-suggest --optimize-autoloader --no-interaction")

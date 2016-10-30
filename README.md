@@ -29,7 +29,8 @@ pip install -r requirements.txt
 
 Current deployment tasks are:
 
-- `deploy_stage`: Usage `fab deploy_stage`. Task will push and deploy current branch to the staging environment.
+- `deploy_stage`: Usage: `fab deploy_stage`. Task will push and deploy current branch to the staging environment.
+- `deploy`: Usage: `fab deploy`. Task will push and deploy `master` to production environment.
 
 
 #### Deployment configuration
