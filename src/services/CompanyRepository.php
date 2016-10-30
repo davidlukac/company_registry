@@ -19,8 +19,10 @@ use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 class CompanyRepository
 {
     const BASE_URL = "http://orsr.sk";
-    private $searchUrl = self::BASE_URL . "/hladaj_ico.asp";
-    private $detailUrl = self::BASE_URL . "/vypis.asp";
+
+    protected $searchUrl = self::BASE_URL . "/hladaj_ico.asp";
+    protected $detailUrl = self::BASE_URL . "/vypis.asp";
+
     /* @var LoggerInterface $og */
     private $log;
 
@@ -35,32 +37,34 @@ class CompanyRepository
     }
 
     /**
-     * @param Int $id
+     * Find and return company information by ID (ICO).
+     *
+     * @param Int $companyId
      *
      * @return CompanyInfo
      */
-    public function findById($id)
+    public function findById($companyId)
     {
         $driver = new GoutteDriver();
         $session = new Session($driver);
         $session->start();
 
-        $url = $this->searchUrl . "?ICO=${id}}&SID=0";
+        $url = $this->searchUrl . "?ICO=${companyId}}&SID=0";
         $session->visit($url);
         $page = $session->getPage();
 
-        $resultRows = Collection::from($page->findAll("xpath", "//tr[td/div[@class='sbj']]"));
+        $resultRows = new Collection($page->findAll("xpath", "//tr[td/div[@class='sbj']]"));
 
         if ($resultRows->isEmpty()) {
             // Handle "not-found".
-            throw new NotFoundHttpException("Company with ID ${id} was not found.");
+            throw new NotFoundHttpException("Company with ID ${companyId} was not found.");
         } elseif ($resultRows->size() > 1) {
             // Handle too many results.
-            throw new NotFoundHttpException("Unambiguous company ID: ${id}!");
-        } else {
-            /* @var NodeElement $result */
-            $result = $resultRows->first();
+            throw new NotFoundHttpException("Unambiguous company ID: ${companyId}!");
         }
+
+        /* @var NodeElement $result */
+        $result = $resultRows->first();
 
         /* @var NodeElement $linkElement */
         $linkElement = $result->findLink("Aktuálny");
@@ -72,13 +76,10 @@ class CompanyRepository
         $address = $detailPage->find('xpath', "//tr[td/span[contains(text(),\"Sídlo\")]]/td[2]//td[1]")->getText();
 
         $company = new CompanyInfo();
-        $company->setId($id);
+        $company->setCompanyId($companyId);
         $company->setName($companyName);
-        if ($result) {
-            $company->setExists(true);
-        } else {
-            $company->setExists(false);
-        }
+        // We have already confirmed that the Company exists and was found.
+        $company->setExists(true);
         $company->setAddress($address);
 
         $this->log->debug(\GuzzleHttp\json_encode($company));
@@ -89,38 +90,37 @@ class CompanyRepository
     /**
      * Confirm whether company exists
      *
-     * @param Int $id Company ID.
+     * @param Int $companyId Company ID.
      *
      * @return CompanyInfo True if company was found, false othewise.
      */
-    public function exists($id)
+    public function exists($companyId)
     {
         $driver = new GoutteDriver();
         $session = new Session($driver);
         $session->start();
 
-        $url = $this->searchUrl . "?ICO=${id}}&SID=0";
+        $url = $this->searchUrl . "?ICO=${companyId}}&SID=0";
         $session->visit($url);
         $page = $session->getPage();
 
-        $resultSet = Collection::from($page->findAll("css", "div.bmk"));
+        $resultSet = new Collection($page->findAll("css", "div.bmk"));
 
         /* @var NodeElement $result */
         $result = $resultSet->getOrDefault(0, null);
 
         $company = new CompanyInfo();
-        $company->setId($id);
-        if ($result) {
-            $company->setExists(true);
-        } else {
-            $company->setExists(false);
-        }
+        $company->setCompanyId($companyId);
+        $company->setExists((bool) $result);
 
         $this->log->debug(\GuzzleHttp\json_encode($company));
 
         return $company;
     }
 
+    /**
+     * @todo Implement.
+     */
     public function getAll()
     {
         throw new ServiceUnavailableHttpException("Not implemented");

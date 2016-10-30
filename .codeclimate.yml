@@ -6,6 +6,7 @@ engines:
       languages:
       - javascript
       - php
+      - python
   fixme:
     enabled: true
   phpmd:
@@ -17,4 +18,5 @@ ratings:
   - "**.jsx"
   - "**.module"
   - "**.php"
+  - "**.py"
 exclude_paths: []
