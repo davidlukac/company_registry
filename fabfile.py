@@ -10,15 +10,17 @@ if os.path.isfile(config_file):
     config = ConfigParser.ConfigParser()
     config.read(config_file)
     connection_string = config.get('Websupport', 'connection_string')
+    git_remote_name = config.get('Git', 'remote_name')
     env.hosts = [connection_string]
 else:
     print("Getting configuration from the environment.")
     env.hosts = os.environ["WEBSUPPORT_CONNECTION_STRING"]
+    git_remote_name = os.environ("GIT_REMOTE_NAME")
 
 
 @task()
 def deploy_stage():
-    local("git push")
+    local("git push {r} HEAD".format(r=git_remote_name))
     branch = local("git rev-parse --abbrev-ref HEAD", True)
     print("We are on branch '{b}'.".format(b=branch))
     code_dir = 'davidlukac.com/sub/stage-registry/'
@@ -34,6 +36,7 @@ def deploy():
     local("git fetch")
     local("git checkout master")
     local("git pull")
+    local("git push {r} HEAD".format(r=git_remote_name))
     prod_dir = 'davidlukac.com/sub/registry/'
     with cd(prod_dir):
         run("git fetch")
