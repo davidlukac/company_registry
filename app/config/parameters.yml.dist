@@ -1,2 +1,4 @@
 parameters:
     debug: false
+    papertrail_host: papertrailapp.com
+    papertrail_port: 1234

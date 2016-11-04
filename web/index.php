@@ -12,14 +12,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $api_v1 = '/api/v1';
 
-$container = new Container(__DIR__);
 $app = new Silex\Application();
-$app['debug'] = $container->getConfiguration()->isInDebugMode();
+$app['container_extra'] = new Container(__DIR__, $app);
 
-$app->register(new MonologServiceProvider(), [
-    'monolog.logfile' => __DIR__ . '/../log/development.log',
-]);
-
+/**
+ * -----------------------------------------------------------------------------
+ * @Route("/api/v1/ico/exists/{id}")
+ * -----------------------------------------------------------------------------
+ */
 $app->get("${api_v1}/ico/exists/{id}", function ($id) use ($app) {
     /* @var CompanyInfo $result */
     $result = new stdClass();
@@ -34,6 +34,11 @@ $app->get("${api_v1}/ico/exists/{id}", function ($id) use ($app) {
     return $app->json($result->toPlainStdClass());
 });
 
+/**
+ * -----------------------------------------------------------------------------
+ * @Route("/api/v1/companies")
+ * -----------------------------------------------------------------------------
+ */
 $app->get("${api_v1}/companies", function () use ($app) {
     $result = new stdClass();
 
@@ -47,6 +52,11 @@ $app->get("${api_v1}/companies", function () use ($app) {
     return $app->json([]);
 });
 
+/**
+ * -----------------------------------------------------------------------------
+ * @Route("/api/v1/companies/{id}")
+ * -----------------------------------------------------------------------------
+ */
 $app->get("${api_v1}/companies/{id}", function ($id) use ($app) {
     /* @var CompanyInfo $result */
     $result = new stdClass();
@@ -61,9 +71,16 @@ $app->get("${api_v1}/companies/{id}", function ($id) use ($app) {
     return $app->json($result->toPlainStdClass());
 });
 
+/**
+ * -----------------------------------------------------------------------------
+ * @Route("/")
+ * -----------------------------------------------------------------------------
+ */
 $app->get("/", function () use ($app) {
     $text = "Welcome to unofficial Slovak Company registry API. For usage documentation see ... .";
     return new Response($text);
 });
 
 $app->run();
+
+

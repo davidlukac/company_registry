@@ -38,6 +38,32 @@ class AppConfiguration implements ConfigurationInterface
     }
 
     /**
+     * String representation of the 'Debug' flag.
+     *
+     * @return string
+     */
+    public function isInDebugModeStr()
+    {
+        return (string) var_export($this->config['debug'], true);
+    }
+
+    /**
+     * @return string
+     */
+    public function getPapertrailHost()
+    {
+        return (string) $this->config['papertrail_host'];
+    }
+
+    /**
+     * @return int
+     */
+    public function getPapertrailPort()
+    {
+        return (int) $this->config['papertrail_port'];
+    }
+
+    /**
      * @inheritdoc
      *
      * @return \Symfony\Component\Config\Definition\Builder\TreeBuilder
@@ -50,6 +76,12 @@ class AppConfiguration implements ConfigurationInterface
             ->children()
                 ->booleanNode('debug')
                     ->defaultFalse()
+                ->end()
+                ->scalarNode('papertrail_host')
+                    ->defaultValue('papertrailapp.com')
+                ->end()
+                ->integerNode('papertrail_port')
+                    ->defaultValue('1234')
                 ->end()
             ->end()
         ;
