@@ -17,7 +17,9 @@
     "monolog/monolog": "^1.21",
     "dusank/knapsack": "^8.3",
     "symfony/serializer": "^3.1",
-    "potsky/pimp-my-log": "^1.7"
+    "incenteev/composer-parameter-handler": "^2.1",
+    "symfony/config": "^3.1",
+    "symfony/dependency-injection": "^3.1"
   },
   "autoload": {
     "psr-4": {
@@ -33,5 +35,18 @@
     "codeclimate/php-test-reporter": "^0.3.2",
     "squizlabs/php_codesniffer": "^2.7",
     "phpmd/phpmd": "^2.4"
+  },
+  "scripts": {
+    "post-install-cmd": [
+      "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+    ],
+    "post-update-cmd": [
+      "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters"
+    ]
+  },
+  "extra": {
+    "incenteev-parameters": {
+      "file": "app/config/parameters.yml"
+    }
   }
 }

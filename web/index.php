@@ -1,5 +1,6 @@
 <?php
 
+use davidlukac\company_registry\dependency_injection\Container;
 use davidlukac\company_registry\models\CompanyInfo;
 use davidlukac\company_registry\services\CompanyRepository;
 use Silex\Provider\MonologServiceProvider;
@@ -11,8 +12,9 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 $api_v1 = '/api/v1';
 
+$container = new Container(__DIR__);
 $app = new Silex\Application();
-$app['debug'] = true;
+$app['debug'] = $container->getConfiguration()->isInDebugMode();
 
 $app->register(new MonologServiceProvider(), [
     'monolog.logfile' => __DIR__ . '/../log/development.log',
