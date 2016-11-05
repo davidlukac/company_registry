@@ -4,11 +4,10 @@ namespace davidlukac\company_registry\dependency_injection;
 
 use davidlukac\company_registry\utils\PapertrailLogger;
 use Monolog\Logger;
-use Psr\Log\LoggerInterface;
 use Silex\Provider\MonologServiceProvider;
 use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Yaml\Parser;
 
 /**
  * Class Container
@@ -48,7 +47,8 @@ class Container
         $this->appConfigDir = $appWebRootDir . '/../app/config';
         $this->container = new ContainerBuilder();
 
-        $config = Yaml::parse(file_get_contents($this->appConfigDir . '/parameters.yml'));
+        $config = (new Parser())->parse(file_get_contents($this->appConfigDir . '/parameters.yml'));
+
         $processor = new Processor();
         $configuration = new AppConfiguration([]);
         $processedConfig = $processor->processConfiguration($configuration, $config);
